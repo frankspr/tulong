@@ -22,14 +22,17 @@ for line in sys.stdin:
       if re.match(r"%s" %FromAPI,RequestUrl):
         try:
           list = re.split('&',RequestUrl)
-          print list
-          uid = list[0]
-          platform = list[1]
-          UID = (re.split('=',uid))[1]
-          Platform = (re.split('=',platform))[1]
+		  if len(list) >=6:
+		    try:
+              uid = list[0]
+              platform = list[1]
+              UID = (re.split('=',uid))[1]
+              Platform = (re.split('=',platform))[1]
+			  print '%s\t%s\t%s\t%s' % (ClientIP ,UID , Platform,1)
+			except:
+			  pass
         except:
-          pass
-        print '%s\t%s\t%s\t%s' % (ClientIP ,UID , Platform,1) 
+          pass 
       if re.match(r"%s" % FromYY,RequestUrl):
         try:
           list = re.split('&',RequestUrl)
