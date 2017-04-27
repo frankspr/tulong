@@ -1,44 +1,13 @@
 #!/usr/bin/env python
 from operator import itemgetter
+import operator
 import sys
-
-current_word = None
-current_count = 0
-word = None
-ip = None
-uid = None
-platform = None
-# input comes from STDIN  
+count_dict = {}
 for line in sys.stdin:
-    # remove leading and trailing whitespace  
     line = line.strip()
-
-    # parse the input we got from mapper.py  
-#    ip, uid, platform, count = line.split('\t', 1)
-    print line
-    info = ''.join(line[:-1])
-    count = line[3]
-
-    # convert count (currently a string) to int  
-
-    try:
-        count = int(count)
-    except ValueError:
-        # count was not a number, so silently  
-        # ignore/discard this line  
-        continue
-
-    # this IF-switch only works because Hadoop sorts map output  
-    # by key (here: word) before it is passed to the reducer  
-    if current_word == info:
-        current_count += count
-    else:
-        if current_word:
-            # write result to STDOUT  
-            print '%s\t%s' % (current_word, current_count)
-        current_count = count
-        current_word = info
-
-# do not forget to output the last word if needed!  
-if current_word == info:
-    print '%s\t%s' % (current_word, current_count)
+    count = count_dict.setdefault(line, 0)
+    count += 1
+    count_dict[line] = count
+sorted_count_dict = sorted(count_dict.iteritems(), key=operator.itemgetter(1), reverse=True)
+for item in sorted_count_dict:
+    print "%s\t%d" % (item[0], item[1])
